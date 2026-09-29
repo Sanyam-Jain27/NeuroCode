@@ -1,15 +1,11 @@
-FROM node
+FROM node:20-alpine
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
 
-COPY ./gateway/package*.json ./gateway/
-RUN cd gateway && npm install
+COPY . .
 
-COPY gateway ./gateway
-COPY shared ./shared
+EXPOSE 8000
 
-WORKDIR /app/gateway
-
-CMD [ "npm","start" ]
+CMD ["npm", "start"]

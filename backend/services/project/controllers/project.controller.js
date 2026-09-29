@@ -1,5 +1,5 @@
 import { json } from "express"
-import redis from "../../../shared/redis/redis.js"
+import redis from "../utils/redis.js"
 import Project from "../models/project.model.js"
 
 export const createProject=async (req,res) => {
