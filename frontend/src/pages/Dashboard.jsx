@@ -25,18 +25,13 @@ function Dashboard() {
     const { userData } = useSelector(state => state.user)
     const { projects, starredProjects } = useSelector(state => state.project)
     const handleLogin = async () => {
-        try {
-            setLoading(true)
-            const result = await signInWithPopup(auth, googleProvider)
-            const token = await result.user.getIdToken()
-            const data = await login(token)
-            dispatch(setUserData(data))
-        } catch (error) {
-            console.error("Login error:", error)
-            alert(error.message || "Failed to log in with Google")
-        } finally {
-            setLoading(false)
-        }
+        setLoading(true)
+        const result = await signInWithPopup(auth, googleProvider)
+        const token = await result.user.getIdToken()
+        const data = await login(token)
+        dispatch(setUserData(data))
+        setLoading(false)
+
     }
 
     const fetchAllProjects = async () => {
