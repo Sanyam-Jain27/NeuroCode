@@ -1,6 +1,10 @@
 {
   "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "ioredis": "^6.0.0"
   }
 }
+

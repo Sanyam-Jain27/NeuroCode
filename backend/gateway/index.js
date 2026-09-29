@@ -13,6 +13,7 @@ import httpProxy from "http-proxy"
 const port = process.env.PORT || 8000
 
 const app = express()
+app.set("trust proxy", 1)
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true
@@ -36,6 +37,14 @@ app.get("/", (req, res) => {
 const socketProxy=httpProxy.createProxyServer({
     target:process.env.TERMINAL_SERVICE || "http://localhost:8005",
     ws:true
+})
+
+socketProxy.on("error", (err, req, res) => {
+    console.error("Socket proxy error:", err.message)
+    if (res && res.writeHead && !res.headersSent) {
+        res.writeHead(502, { "Content-Type": "application/json" })
+        res.end(JSON.stringify({ error: "Terminal service unavailable" }))
+    }
 })
 
 app.use("/socket.io",(req,res)=>{

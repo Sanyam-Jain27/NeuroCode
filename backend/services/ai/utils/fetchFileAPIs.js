@@ -1,7 +1,14 @@
-import axios from "axios"
 import dotenv from "dotenv"
+import path from "path"
+import { fileURLToPath } from "url"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+dotenv.config({ path: path.resolve(__dirname, "../.env") })
 dotenv.config()
-const File_url=process.env.FILE_SERVICE_URL
+
+import axios from "axios"
+
+const File_url = process.env.FILE_SERVICE_URL || "http://localhost:8003" 
 export const createFolder=async ({projectId,parentId,name,userId}) => {
     try {
         const {data}=await axios.post(`${File_url}/create-folder`,

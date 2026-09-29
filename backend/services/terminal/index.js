@@ -5,7 +5,8 @@ import http from "http"
 import { Server } from "socket.io"
 import os from "os"
 import path from "path"
-import fs from "fs/promises"
+import fs from "fs"
+import fsPromises from "fs/promises"
 import pty from "node-pty"
 dotenv.config()
 const port = process.env.PORT || 8005
@@ -16,9 +17,10 @@ const fileServiceUrl = process.env.FILE_SERVICE_URL || "http://localhost:8003"
 
 const WORKSPACE_ROOT = path.join(os.tmpdir(), "vertex-ai")   // c://temp/vertex-ai/1243
 
-const SHELL = process.platform === "win32" ? "powershell.exe" : "bash"
 
-
+const SHELL = process.platform === "win32" 
+  ? "powershell.exe" 
+  : (fs.existsSync("/bin/zsh") ? "/bin/zsh" : "/bin/bash");
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
@@ -105,24 +107,22 @@ const writeNodes = async (nodes, directory) => {
     const name = safeName(node.name)
     const target = path.join(directory, name)
     if (node.type === "folder") {
-      await fs.mkdir(target, { recursive: true })
+      await fsPromises.mkdir(target, { recursive: true })
       await writeNodes(node.children || [], target)
       continue;
     }
     if (node.type === "file") {
-      await fs.mkdir(path.dirname(target), { recursive: true })
-      await fs.writeFile(target, node.content || "", "utf8")
+      await fsPromises.mkdir(path.dirname(target), { recursive: true })
+      await fsPromises.writeFile(target, node.content || "", "utf8")
     }
   }
-
 }
-
 
 const syncProject = async (projectId, userId) => {
   const tree = await getTree(projectId, userId)
 
   const root = workspace(projectId)
-  await fs.mkdir(root, { recursive: true })
+  await fsPromises.mkdir(root, { recursive: true })
 
   if (tree.length == 1 && tree[0]?.type == "folder") {
     await writeNodes(tree[0].children || [], root)
@@ -161,23 +161,28 @@ io.on("connection", (socket) => {
 
       cols = normaliseCols(cols)
       rows = normaliseRows(rows)
+const { root } = await syncProject(projectId, userId);
 
-      const { root } = await syncProject(projectId, userId)
+      // Ensure the workspace directory definitely exists on disk using fsPromises
+      await fsPromises.mkdir(root, { recursive: true });
 
-      const ptyProcess = pty.spawn(
-        SHELL,
-        [],
-        {
-          name: "xterm-256color",
-          cols,
-          rows,
-          cwd: root,
-          env: {
-            ...process.env,
-            FORCE_COLOR: "1",
-          }
-        }
-      )
+      console.log("Spawning PTY with shell:", SHELL, "at path:", root);
+
+const ptyProcess = pty.spawn(
+  SHELL,
+  [],
+  {
+    name: "xterm-256color",
+    cols,
+    rows,
+    cwd: root,
+    env: {
+      ...process.env,
+      FORCE_COLOR: "1",
+      PATH: process.env.PATH || "/usr/bin:/bin:/usr/sbin:/sbin"
+    }
+  }
+);
 
 
       ptyProcess.onData((data) => {

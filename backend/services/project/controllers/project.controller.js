@@ -47,7 +47,7 @@ export const getProjects=async (req,res) => {
       
       await redis.set(key,JSON.stringify(projects))
 
-      return res.status(200).json(projects)
+      return res.status(200).json(project)
       
 
     } catch (error) {
@@ -93,7 +93,7 @@ export const getStarredProjects=async (req,res) => {
 
      await redis.set(key,JSON.stringify(projects))
 
-      return res.status(200).json(projects)
+      return res.status(200).json(project)
 
     } catch (error) {
         return res.status(500).json({message:`get starred projects error ${error}`})
@@ -116,7 +116,7 @@ export const toggleStar=async (req,res) => {
       await redis.del(key)
       await redis.del(`projects-${userId}`)
 
-      return res.status(200).json(projects)
+      return res.status(200).json(project)
 
     } catch (error) {
         return res.status(500).json({message:`toggle star error ${error}`})
@@ -127,9 +127,9 @@ export const toggleStar=async (req,res) => {
 
 export const deleteProject=async (req,res) => {
    try {
-  
+      const userId=req.headers["x-user-id"]
       const {id}=req.params
-      const project=await Project.findByIdAndDelete(id)
+      const project=await Project.findOneAndDelete({ _id: id, ...(userId ? { owner: userId } : {}) })
       if(!project){
         return res.status(404).json({message:"project not found"})
       }
