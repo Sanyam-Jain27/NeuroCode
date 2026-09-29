@@ -1,11 +1,15 @@
-FROM node:20-alpine
+FROM node
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
 
-COPY . .
+COPY ./services/auth/package*.json ./services/auth/
+RUN cd services/auth && npm install
 
-EXPOSE 8001
+COPY services/auth ./services/auth
+COPY shared ./shared
 
-CMD ["npm", "start"]
+WORKDIR /app/services/auth
+
+CMD [ "npm","start" ]

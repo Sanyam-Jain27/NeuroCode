@@ -20,7 +20,7 @@ const WORKSPACE_ROOT = path.join(os.tmpdir(), "vertex-ai")   // c://temp/vertex-
 
 const SHELL = process.platform === "win32" 
   ? "powershell.exe" 
-  : (fs.existsSync("/bin/zsh") ? "/bin/zsh" : (fs.existsSync("/bin/bash") ? "/bin/bash" : "/bin/sh"));
+  : (fs.existsSync("/bin/zsh") ? "/bin/zsh" : "/bin/bash");
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {

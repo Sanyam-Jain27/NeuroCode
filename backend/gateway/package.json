@@ -14,7 +14,6 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "ioredis": "^6.0.0",
     "express": "^5.2.1",
     "express-http-proxy": "^2.1.2",
     "http-proxy": "^1.18.1",

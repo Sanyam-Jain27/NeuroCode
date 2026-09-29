@@ -1,11 +1,15 @@
-FROM node:20-alpine
+FROM node
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
 
-COPY . .
+COPY ./services/payment/package*.json ./services/payment/
+RUN cd services/payment && npm install
 
-EXPOSE 8006
+COPY services/payment ./services/payment
+COPY shared ./shared
 
-CMD ["npm", "start"]
+WORKDIR /app/services/payment
+
+CMD [ "npm","start" ]
