@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth"
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyC3N0fLeLCAzkpS9zK5uUwQaeYyiLW2DwQ",
   authDomain: "vertexai-746c4.firebaseapp.com",
   projectId: "vertexai-746c4",
   storageBucket: "vertexai-746c4.firebasestorage.app",
