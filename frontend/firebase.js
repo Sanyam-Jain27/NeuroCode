@@ -4,6 +4,7 @@ import {
   browserLocalPersistence,
   browserSessionPersistence,
   inMemoryPersistence,
+  browserPopupRedirectResolver,
   GoogleAuthProvider
 } from "firebase/auth";
 
@@ -19,9 +20,11 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Avoid IndexedDB bug (Database is closing/hidden) by using localStorage/sessionStorage persistence
+// Avoid IndexedDB bug (Database is closing/hidden) by using browserLocalPersistence
+// and provide browserPopupRedirectResolver to prevent auth/argument-error
 export const auth = initializeAuth(app, {
-  persistence: [browserLocalPersistence, browserSessionPersistence, inMemoryPersistence]
+  persistence: [browserLocalPersistence, browserSessionPersistence, inMemoryPersistence],
+  popupRedirectResolver: browserPopupRedirectResolver
 });
 
 export const googleProvider = new GoogleAuthProvider();
