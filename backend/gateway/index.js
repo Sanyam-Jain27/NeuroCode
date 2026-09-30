@@ -14,12 +14,16 @@ const port = process.env.PORT || 8000
 
 const app = express()
 app.set("trust proxy", 1)
-app.use(cors({
+const corsOptions = {
     origin: (origin, callback) => {
         callback(null, true)
     },
-    credentials: true
-}))
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+}
+app.use(cors(corsOptions))
+app.options("*", cors(corsOptions))
 
 app.use(cookieParser())
 app.use(morgan("dev"))
