@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyAroYeBAauuoy7RlxlEdRD0Aa88dn2-0XY",
+  apiKey: "AIzaSyAroYeBAauuoy7RlxlEdRD0Aa88dn2-0XY",
   authDomain: "neurocode-59bb3.firebaseapp.com",
   projectId: "neurocode-59bb3",
   storageBucket: "neurocode-59bb3.firebasestorage.app",
