@@ -1,5 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import {
+  initializeAuth,
+  browserLocalPersistence,
+  browserSessionPersistence,
+  inMemoryPersistence,
+  GoogleAuthProvider
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAroYeBAauuoy7RlxlEdRD0Aa88dn2-0XY",
@@ -12,5 +18,11 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+
+// Avoid IndexedDB bug (Database is closing/hidden) by using localStorage/sessionStorage persistence
+export const auth = initializeAuth(app, {
+  persistence: [browserLocalPersistence, browserSessionPersistence, inMemoryPersistence]
+});
+
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: "select_account" });

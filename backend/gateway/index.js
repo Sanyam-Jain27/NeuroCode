@@ -1,15 +1,15 @@
 import express from "express"
-import dotenv from "dotenv"
-dotenv.config()
-import cors from "cors"
-import cookieParser from "cookie-parser"
-import morgan from "morgan"
 import proxy from "express-http-proxy"
+import dotenv from "dotenv"
+import cookieParser from "cookie-parser"
 import { protect } from "./middleware/protect.js"
 import { getCurrentUser } from "./controllers/user.controller.js"
 import { proxyWithHeader } from "./utils/proxyWithHeader.js"
+import cors from "cors"
+import morgan from "morgan"
 import http from "http"
 import httpProxy from "http-proxy"
+dotenv.config()
 const port = process.env.PORT || 8000
 
 const app = express()
@@ -63,9 +63,6 @@ server.on("upgrade",(req,socket,head)=>{
     }
 })
 
-
-
-
-server.listen(port,"0.0.0.0",() => {
+server.listen(port, "0.0.0.0", () => {
     console.log(`gateway started at ${port}`)
 })
