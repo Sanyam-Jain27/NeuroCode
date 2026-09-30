@@ -15,7 +15,9 @@ const port = process.env.PORT || 8000
 const app = express()
 app.set("trust proxy", 1)
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: (origin, callback) => {
+        callback(null, true)
+    },
     credentials: true
 }))
 

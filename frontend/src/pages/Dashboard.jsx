@@ -25,13 +25,21 @@ function Dashboard() {
     const { userData } = useSelector(state => state.user)
     const { projects, starredProjects } = useSelector(state => state.project)
     const handleLogin = async () => {
-        setLoading(true)
-        const result = await signInWithPopup(auth, googleProvider)
-        const token = await result.user.getIdToken()
-        const data = await login(token)
-        dispatch(setUserData(data))
-        setLoading(false)
-
+        try {
+            setLoading(true)
+            const result = await signInWithPopup(auth, googleProvider)
+            const token = await result.user.getIdToken()
+            const data = await login(token)
+            if (data) {
+                dispatch(setUserData(data))
+            } else {
+                console.error("Login failed: Backend returned no user data")
+            }
+        } catch (error) {
+            console.error("Login error:", error)
+        } finally {
+            setLoading(false)
+        }
     }
 
     const fetchAllProjects = async () => {
@@ -49,12 +57,14 @@ function Dashboard() {
     }
 
     useEffect(() => {
-        if (activeSession == "projects") {
-            fetchAllProjects()
-        } else {
-            fetchStarredProjects()
+        if (userData) {
+            if (activeSession == "projects") {
+                fetchAllProjects()
+            } else {
+                fetchStarredProjects()
+            }
         }
-    }, [activeSession,userData])
+    }, [activeSession, userData])
 
     if (!userData) {
         return (
